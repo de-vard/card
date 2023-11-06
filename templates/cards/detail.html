@@ -1,0 +1,62 @@
+{% extends "html.html" %}
+
+{% load static %}
+{% block content %}
+<div class="container">
+    <!--*********** Данные в карточке ******************** -->
+    <div class="card text-center text-bg-dark mb-3" style="width: 18rem;">
+        <img src="{{ card.image.photo.url }}" class="card-img-top" alt="{{card}}">
+        <div class="card-body">
+        <h5 class="card-title">{{ card.term }}</h5>
+          <h6 class="card-title">|{{ card.transcription }}|</h6>
+        <p class="card-text">{{ card.definition }}</p>
+      </div>
+    </div>
+    <!--  ************************************************** -->
+
+    <p>Автор: {{ card.author }}</p>
+    <p>Дата создания: {{ card.created }}</p>
+    <p>Дата последнего редактирования: {{ card.updated }}</p>
+
+
+<!-- ********** Форма отправки ошибки в слове ***************** -->
+<form method="post"  action="{{ card.get_absolute_url }}">
+    {% csrf_token %}
+    <div class="btn-group">
+        <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Cообщить об ошибке
+        </button>
+
+        <ul class="dropdown-menu">
+            <div class="mb-3">
+
+<!--            <label for="exampleFormControlTextarea1" class="form-label">Подробнее где ошибка(ауди, транскрипции, переводе)</label>-->
+<!--            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text" required></textarea>-->
+            {{ form }}
+            </div>
+            <input class="btn btn-primary" type="submit" value="Отправить">
+        </ul>
+    </div>
+</form>
+<!-- ************************************************* -->
+
+
+
+<!-- ********* Всплывающее окно ********************* -->
+    <br>
+{% if messages %}
+    <div class="alert alert-primary" role="alert">
+       <ul class="messages">
+            {% for message in messages %}
+                    {{ message }}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<!-- ************************************************* -->
+</div>
+
+
+
+{% endblock %}
+

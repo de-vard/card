@@ -1,0 +1,11 @@
+{% extends "html.html" %}
+{% load static %}
+
+{% block content %}
+    {% for course in courses %}
+        <p>
+            <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+        </p>
+
+    {% endfor %}
+{% endblock %}

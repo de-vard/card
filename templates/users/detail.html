@@ -1,0 +1,35 @@
+{% extends "html.html" %}
+
+
+{% block content %}
+
+    {% if user.photo %}
+      {{ user.photo.url }}
+    {% endif %}
+    {{ user.username }}
+    {{ user.first_name  }}
+    {{ user.last_name  }}
+
+    <!-- ****** Форма подписки на пользователей ******* -->
+    {% if request.user != user %} <!-- Если не равны, то показываем форму подписки на пользователей -->
+        <form method="POST" action="{{ user.get_absolute_url }}">
+            {% csrf_token %}
+                {% if request.user not in user.followers.all %}
+                    <input type="hidden" name="action" value="{{ 'follow' }}">
+                    <button type="submit" class="follow button">Follow</button>
+                {% else %}
+                    <input type="hidden" name="action" value="{{ 'unfollow' }}">
+                    <button type="submit" class="follow button">Unfollow</button>
+                {% endif %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+    {% endif %}
+    <!-- ********************************************** -->
+{% endblock %}
+

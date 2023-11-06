@@ -1,0 +1,24 @@
+{% extends "html.html" %}
+
+{% block content %}
+<h5>Название: {{ lesson.title }}</h5>
+<h6>Урок принадлежит урок: <a href="{{ lesson.course.get_absolute_url }}" >{{ lesson.course.title }}</a></h6>
+<p><a href="{% url 'lesson:study' lesson.pk %}">Изучать</a></p>
+
+<table border="1">
+{% for word in lesson.words.all %}
+    <tr>
+        <td>{{ word.term }}</td>
+        <td>{{ word.definition }}</td>
+        <td>
+            {% if word.image %}
+            <img src="{{ word.image.photo.url }}" alt="{{ word.term }}" style="width: 100px; height: 100px;">
+            {% endif %}
+
+        </td>
+
+    </tr>
+{% endfor %}
+</table>
+
+{% endblock %}

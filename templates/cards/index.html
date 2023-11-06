@@ -1,0 +1,38 @@
+{% extends "html.html" %}
+
+{% block content %}
+
+<div class="container">
+    <!-- **************** Поиск ******************************** -->
+    <form method="GET"  action="{% url 'card:list' %}">
+        <h2>Поиск слов</h2>
+        <p>Введите в поле слово, что проверить есть ли он в базе данных:</p>
+        <input type='text' name='search' value='{{ request.GET.search }}' class="button">
+        <input class="button" type='submit' value="Search Profile">
+    </form>
+    <br>
+    <!-- *************************************************** -->
+
+
+
+
+
+
+
+    <!-- ************* Вывод писка через цикл ************ -->
+    {% for card in all_cards %}
+    <div class="list-group">
+      <a href="{{ card.get_absolute_url }}" class="list-group-item list-group-item-action active" aria-current="true">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ card.term }}</h5>
+          <small>{{ card.created }}</small>
+        </div>
+        <p class="mb-1">| {{ card.transcription }} |</p>
+        <small>{{ card.definition }}</small>
+      </a>
+    </div>
+    <br>
+    {% endfor %}
+    <!--  ************************************************** -->
+</div>
+{% endblock %}

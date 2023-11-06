@@ -1,0 +1,22 @@
+{% extends "html.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h3>Добро пожаловать на сайт</h3>
+
+  <h2>What's happening</h2>
+  <div id="action-list">
+    {% if actions %}
+      <ul>
+          {% for action in actions %}
+              <li>
+                  {{ action.user }} {{ action.verb }} {{ action.target }}
+              </li>
+          {% endfor %}
+      </ul>
+    {% else %}
+      <p>Нет действий для отображения.</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "html.html" %}
+{% block content %}
+
+    <form method="get">
+        <label for="sort">Сортировать по:</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+            <option value="">---</option>
+            <option value="user_count">Количеству пользователей</option>
+            <option value="created">Дате</option>
+            <option value="lesson_count">Количеству уроков</option>
+        </select>
+    </form>
+
+
+    {% for i in all_courses %}
+    <h2><a href="{{ i.get_absolute_url }}">{{ i }}</a></h2>
+    Количество уроков: {{ i.lesson_count }}
+    Количество учеников: {{ i.user_count }}
+    {% empty %}
+        Нехуя нет
+    {% endfor %}
+{% endblock %}

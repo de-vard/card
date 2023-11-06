@@ -1,0 +1,57 @@
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 300px;
+    height: 400px;
+    margin: 0 auto;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 300px;
+    height: 400px;
+    margin: 0 auto;
+    border: 1px solid #000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.dialog {
+    align-self: flex-end;
+    color: green;
+}
+.text{
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+.listen {
+    width: 50%;
+    height: 30px;
+    border-radius: 15px;
+}
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+.fon {
+    flex-grow: 1; /* Добавлено свойство flex-grow */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрирование содержимого по вертикали */
+    background-image: url('{{ word.image.photo.url}}');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+.listen-container {
+    display: flex;
+    justify-content: center;
+}
+

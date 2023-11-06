@@ -1,0 +1,54 @@
+Уперся в незнание javascript и html с css подтяну их и продолжу
+необходимо реализовать пагинацию, а также две кнопки знаю не знаю
+при их нажатии на сервер будет отправляться post запрос с меткой,
+также нужно обработать момент когда пользователь изучил все слова
+и карточка является пустой также нужна метка когда пользователь пролистал
+все карточки именно кнопками(знаю, не знаю) после этого на сервер нужно отправить
+post запрос на сохранения карточек из сессии в модель изученных.
+
+
+<div class="main">
+      {% for word in paginator_words.object_list %}
+
+        <div class="card">
+          <div class="dialog">💬</div>
+          <img src="{{ word.image_url }}">
+
+
+          <div class="fon">
+              <div class="fon" style="background-image: url('{{ word.image.photo.url }}');">
+            <div class="text"><h2>{{ word.term }}</h2></div>
+            <div class="text"><h2>[{{ word.transcription }}]</h2></div>
+            <div class="text"><h2>{{ word.definition }}</h2></div>
+                  </div>
+          </div>
+
+          <div class="pagination">
+            {% if paginator_words.has_next %}
+              <a href="?page={{ paginator_words.next_page_number }}"><form action="">{{0}}</form><button>незнаю</button></a>
+              <a href="?page={{ paginator_words.next_page_number }}"><form action="">{{1}}</form><button>знаю</button></a>
+            {% endif %}
+          </div>
+
+          <div class="listen-container">
+          <button class="listen" onclick="playAudio()">Слушать</button>
+          <audio id="myAudio" src="{{ word.audi }}"></audio>
+          </div>
+
+
+        </div>
+        <div class="pagination">
+          {% if paginator_words.has_previous %}
+            <a href="?page={{ paginator_words.previous_page_number }}"><button>Назад</button></a>
+          {% endif %}
+
+          {% if paginator_words.has_next %}
+            <a href="?page={{ paginator_words.next_page_number }}"><button>Вперед</button></a>
+          {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+
+
+

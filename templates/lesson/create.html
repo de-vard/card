@@ -1,0 +1,53 @@
+{% extends "html.html" %}
+
+{% block content %}
+<h4>TODO: при отправке формы, обезательные поля не отображаются и урок просто не сохраняется </h4>
+    <h1>Создание своего Урока</h1>
+    <form id="form-container" method="POST">
+      {% csrf_token %}
+        <hr>
+         {{ form.as_p }}
+        <hr>
+        {{ form_card.management_form }}
+        {% for card in form_card %}
+        <div class="bird-form">
+              <p>Термин:{{ card.term }}               Определение: {{ card.definition }}</p>
+              <p>Транскрипция:{{ card.transcription  }}</p>
+              <p>Изображение:{{ card.image }}</p>
+              <p>Удалить: {{ card.DELETE }}</p>
+        </div>
+        {% endfor %}
+        <button id="add-form" type="button">Еще слово</button>
+        <button type="submit">Сохранить</button>
+    </form>
+<script>
+        let birdForm = document.querySelectorAll(".bird-form")
+        let container = document.querySelector("#form-container")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = birdForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e) {
+    e.preventDefault();
+
+    let newForm = birdForm[0].cloneNode(true);
+    let formRegex = RegExp(`form-(\\d){1}-`, 'g');
+
+    formNum++;
+    newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`);
+    container.insertBefore(newForm, addButton);
+
+    // Обновление атрибутов required для новых полей
+    let newFields = newForm.querySelectorAll('input, select, textarea');
+    newFields.forEach(function (field) {
+        field.required = true;
+    });
+
+    totalForms.setAttribute('value', `${formNum + 1}`);
+}
+    </script>
+{% endblock %}
+
+

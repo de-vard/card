@@ -1,0 +1,60 @@
+{% extends "html.html" %}
+
+{% block content %}
+  <h2>Название: {{ course.title }}</h2>
+  <h4>Уровень сложности: {{ course.get_level_display }}</h4>
+  <h4>Автор курса: {{ course.author }}</h4>
+  <h6>Теги курса: {{ course.tags }}</h6>
+
+
+   <!-- ****** Форма подписки на курсы ******* -->
+    {% if request.user != course.author %} <!-- Если не равны, то показываем форму подписки на пользователей -->
+        <form method="POST" action="{{ course.get_absolute_url }}">
+            {% csrf_token %}
+
+            <h6>  Код проверяет, зарегистрирован ли текущий пользователь на курс, используя выражение  if request.user not in course.registrations.all. Однако это не самый эффективный способ сделать это, потому что он получает всех зарегистрированных пользователей из базы данных и проверяет, есть ли текущий пользователь среди них. Это может быть медленным, если у курса много зарегистрированных пользователей. </h6>
+            {% if request.user not in course.registrations.all %}
+                    <input type="hidden" name="action" value="{{ 'follow' }}">
+                    <button type="submit" class="follow button">Поступить на курс</button>
+            {% else %}
+                    <input type="hidden" name="action" value="{{ 'unfollow' }}">
+                    <button type="submit" class="follow button">Выйти из курса</button>
+            {% endif %}
+
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+
+    {% endif %}
+    <!-- ********************************************** -->
+
+
+
+
+
+
+
+
+
+
+
+  <a href="{%  url 'lesson:create' course_pk=course.pk %}">Создать урок</a>
+
+  <p>Список уроков: </p>
+    <ul>
+      {% for lesson in course.lesson_set.all %}
+        <li>{{ lesson.title }}</li>
+         <a href="{% url 'lesson:detail' pk=lesson.pk %}">
+            перейти по сылке {{ lesson.pk }}
+        </a>
+      {% endfor %}
+    </ul>
+
+
+
+{% endblock %}

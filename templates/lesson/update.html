@@ -1,0 +1,23 @@
+{% extends "html.html" %}
+
+
+{% block content %}
+    <h2>Обновление урока</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h3>Карточки</h3>
+        {{ card_formset.management_form }}
+        {% for card_form in card_formset %}
+            {{ card_form.id }}
+            <p>Термин:{{ card_form.term }}               Определение: {{ card_form.definition }}</p>
+              <p>Транскрипция:{{ card_form.transcription  }}</p>
+              <p>Изображение:{{ card_form.image }}</p>
+              <p>Удалить: {{ card_form.DELETE }}</p>
+        {% endfor %}
+        <hr>
+        <input type="submit" value="Сохранить">
+    </form>
+{% endblock %}
+
+
