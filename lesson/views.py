@@ -35,29 +35,37 @@ class StudyView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['words'] = self.remove_duplicates()
+        if context['words']:
+            "сделай рендирект так ка слов для изучения нету"
         return context
 
-    def remembering_and_deleting_words_in_session(self):
-        lesson_session = LessonSession(self.request)
+    def get(self, request, *args, **kwargs):
+        session = LessonSession(self.request)
+        for i in request:
+            print(i)
+        # word = request.word  # код может не работать, просто посылаю сам обьект слова и получаю его
+        #
+        # if word.count == 1:  # пользователь знает слово
+        #     session.add(word)
+        # elif word.count == 0 and word in session:  # пользователь не знает слово и его нет в сесси
+        #     session.remove(word)
+        #
+        # if word.last:  # слово пришло с отметкой что оно последнне, вызываем функцию сохранения сесси в БД
+        #     self.save_session(session)
+        #
+        return super().get(request, *args, **kwargs)
 
-        слово = Card.objects.get(id=1)
-
-        if "Если пользователь знает слово то добавляем его в сессию":
-            lesson_session.add(слово)
-        elif "Если пользователь не знает слова и это слово находится в ссессии удаляем":
-            lesson_session.remove(слово)
-
-        if "Если это последнее слово тогда мы сохряняем сессию в базе прогресса":
-            progress = LessonProgress.objects.get(user=self.request.user, lesson=self.get_object())
-            for word_id in lesson_session.lesson:
-                word = Card.objects.get(pk=word_id)
-                progress.cards.add(word)
-                # Todo:добавь код удаления ссесии
-                # Todo:сделать редирект на страницу того что выучили или пршли все слова
+    def save_session(self, words_in_session):
+        progress = LessonProgress.objects.get(user=self.request.user, lesson=self.get_object())
+        for word_id in words_in_session:
+            word = Card.objects.get(pk=word_id)
+            progress.cards.add(word)
+            # Todo:добавь код удаления ссесии
+            # Todo:сделать редирект на страницу того что выучили или пршли все слова
         self.deleting_user_progress()
 
     def deleting_user_progress(self):
-        progress = LessonProgress.objects.get(user=self.request.user, lesson=self.get_object())
+        progress = LessonProgress.objects.get()
         progress.cards.clear()  # очищаем выученные слова из модели прогресса пользователя
         # Todo:сделать редирек для перенаправления к началу обучения так как прогресс удален
 
