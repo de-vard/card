@@ -1,5 +1,6 @@
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import DetailView
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView, ListView
 
 from cards.forms import CardFormSet
 from cards.models import Card
@@ -29,17 +30,21 @@ class StudyView(DetailView):
             all_words_in_lesson = lesson_obj.words.all()  # Получаем все слова из урока
             lesson_words = all_words_in_lesson.exclude(
                 id__in=learned_words.cards.all())  # исключаем слова которые выучили
+
             return lesson_words
-        return lesson_obj.words.all()  # если нету выученных слов отправляем все слова
+        lesson_obj_all = lesson_obj.words.all()  # если нету выученных слов отправляем все слова
+
+        return lesson_obj_all
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['words'] = self.remove_duplicates()
-        if context['words']:
-            "сделай рендирект так ка слов для изучения нету"
         return context
 
     def get(self, request, *args, **kwargs):
+        if not self.remove_duplicates():  # вызываем функцию проверки сколько слов осталось не изученно, и если не одно перенаправляем пользователя на страницу
+            return self.result_about_learning_lesson()
+
         session = LessonSession(self.request)
         for i in request:
             print(i)
@@ -53,6 +58,7 @@ class StudyView(DetailView):
         # if word.last:  # слово пришло с отметкой что оно последнне, вызываем функцию сохранения сесси в БД
         #     self.save_session(session)
         #
+
         return super().get(request, *args, **kwargs)
 
     def save_session(self, words_in_session):
@@ -68,6 +74,18 @@ class StudyView(DetailView):
         progress = LessonProgress.objects.get()
         progress.cards.clear()  # очищаем выученные слова из модели прогресса пользователя
         # Todo:сделать редирек для перенаправления к началу обучения так как прогресс удален
+
+    def result_about_learning_lesson(self):
+        """Код отрабатывается только после того как пользователь выучмл все слова из урока"""
+        lesson = self.get_object()
+        if self.remove_duplicates():  # проверям выучил ли пользователь все слова, если слова есть то пользователь изучил не все
+            return redirect('lesson:study', pk=lesson.pk)
+
+        context = {
+            'lesson': lesson,
+            'count_words': len(lesson.words.all())
+        }
+        return render(self.request, 'lesson/study_completion_info.html', context=context)
 
 
 class LessonDetailView(DetailView):

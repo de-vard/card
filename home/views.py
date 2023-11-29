@@ -15,3 +15,4 @@ class DashboardListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['actions'] = get_actions(self.request.user)  # вызываем функцию get_actions
         return context
+
