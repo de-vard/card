@@ -39,41 +39,49 @@ class StudyView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['words'] = self.remove_duplicates()
+        context['lesson'] = self.get_object()
         return context
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        self.deleting_user_progress()  # выставляем первы для проверки удаляет ли пользователь результат или нет
+
         if not self.remove_duplicates():  # вызываем функцию проверки сколько слов осталось не изученно, и если не одно перенаправляем пользователя на страницу
             return self.result_about_learning_lesson()
 
-        session = LessonSession(self.request)
-        for i in request:
-            print(i)
-        # word = request.word  # код может не работать, просто посылаю сам обьект слова и получаю его
-        #
-        # if word.count == 1:  # пользователь знает слово
-        #     session.add(word)
-        # elif word.count == 0 and word in session:  # пользователь не знает слово и его нет в сесси
-        #     session.remove(word)
-        #
-        # if word.last:  # слово пришло с отметкой что оно последнне, вызываем функцию сохранения сесси в БД
-        #     self.save_session(session)
-        #
+        self.update_knowledge()  # вызывает функцию для работы с сохранением в сесси слов
 
         return super().get(request, *args, **kwargs)
 
-    def save_session(self, words_in_session):
+    def update_knowledge(self):
+        """Функция определяет знает пользователь слово или нет и сохраняет результат в сессию"""
+        word_id = self.request.POST.get('word_id', None)  # значение слова
+        knowledge = self.request.POST.get('knowledge', None)  # значение параметра знает человек слово или нет
+        session = LessonSession(self.request)
+        if knowledge == "known":
+            session.add(word_id)
+        elif knowledge in session.lesson and knowledge == "unknown":
+            session.remove(word_id)
+
+        last_or_not_last = self.request.POST.get('last', None)
+        if last_or_not_last:  # слово пришло с отметкой что оно последнне, вызываем функцию сохранения сесси в БД
+            self.save_session(
+                session)  # передаем в функцию список выученных слов  сохранения сессии в прогрессе пользователя
+
+    def save_session(self, session):
+        """Берем слова из сессии и сохраняем их в модели прогресса пользователя"""
+        words_in_session = session.lesson.copy()  # копируем список из сессии так как удаление слов из сессии присходи быстрее добавления ее в модель прогресса пользователя
         progress = LessonProgress.objects.get(user=self.request.user, lesson=self.get_object())
         for word_id in words_in_session:
             word = Card.objects.get(pk=word_id)
             progress.cards.add(word)
-            # Todo:добавь код удаления ссесии
-            # Todo:сделать редирект на страницу того что выучили или пршли все слова
-        self.deleting_user_progress()
+
+            session.remove(word)
 
     def deleting_user_progress(self):
-        progress = LessonProgress.objects.get()
-        progress.cards.clear()  # очищаем выученные слова из модели прогресса пользователя
-        # Todo:сделать редирек для перенаправления к началу обучения так как прогресс удален
+        progress = LessonProgress.objects.get(user=self.request.user, lesson=self.get_object())
+        lesson_del = self.request.POST.get('lesson_del', None)
+        if lesson_del:
+            progress.delete()
 
     def result_about_learning_lesson(self):
         """Код отрабатывается только после того как пользователь выучмл все слова из урока"""

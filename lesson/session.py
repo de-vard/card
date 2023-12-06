@@ -11,7 +11,7 @@ class LessonSession:
 
     def add(self, word):
         """Добавить слово в сохраненные."""
-        word_id = str(word.id)
+        word_id = str(word)
         if word_id not in self.session['lesson']:  # проверяем на вхождение слова в сессию, если слово не входит
             self.session['lesson'].append(word_id)
             self.save()

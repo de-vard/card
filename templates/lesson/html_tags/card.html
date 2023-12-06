@@ -16,37 +16,41 @@
 
           <div class="pagination">
             {% if paginator_words.has_next %}
-              <a href="?page={{ paginator_words.next_page_number }}">
-                <form method="get" action="lesson:study">
-                  <input type="hidden" name="word"  value=0/>
-                  <button>не знаю</button>
-                </form>
-              </a>
+              <form method="post" action="{% url 'lesson:study' lesson.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="word_id" value="{{ word.id }}">
+                <input type="hidden" name="knowledge" value="known">
+                <input type="submit" value="Знаю">
+              </form>
 
-              <a href="?page={{ paginator_words.next_page_number }}">
-                <form method="get" action="lesson:study">
-                  <input type="hidden" name="word"  value=1 />
-                  <button>знаю</button>
-                </form>
-              </a>
+              <form method="post" action="{% url 'lesson:study' lesson.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="word_id" value="{{ word.id }}">
+                <input type="hidden" name="knowledge" value="unknown">
+                <input type="submit" value="Не знаю">
+              </form>
             {% else %}
-                <form method="get" action="lesson:study">
-                  <input type="hidden" name="last" value=0/>
-                  <button>не знаю</button>
-                </form>
+              <form method="post" action="{% url 'lesson:study' lesson.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="word_id" value="{{ word.id }}">
+                <input type="hidden" name="knowledge" value="known">
+                <input type="hidden" name="last" value="yes">
+                <input type="submit" value="Знаю последнее">
+              </form>
 
-                <form method="get" action="lesson:study">
-                  <input type="hidden" name="last" value=1 />
-                  <button>знаю</button>
-                </form>
-
-
+              <form method="post" action="{% url 'lesson:study' lesson.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="word_id" value="{{ word.id }}">
+                <input type="hidden" name="knowledge" value="unknown">
+                <input type="hidden" name="last" value="last">
+                <input type="submit" value="Не знаю последнее">
+              </form>
             {% endif %}
           </div>
 
           <div class="listen-container">
-          <button class="listen" onclick="playAudio()">Слушать</button>
-          <audio id="myAudio" src="{{ word.audi }}"></audio>
+            <button class="listen" onclick="playAudio()">Слушать</button>
+            <audio id="myAudio" src="{{ word.audi }}"></audio>
           </div>
 
 
@@ -62,3 +66,5 @@
       </div>
       {% endfor %}
     </div>
+
+

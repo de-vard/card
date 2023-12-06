@@ -1,6 +1,6 @@
 from django import template
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse
+
 
 
 register = template.Library()
@@ -23,4 +23,4 @@ def learn_cards(request, words, lesson):
         # Если page_number находится вне диапазона, то
         # выдать последнюю страницу
         words = paginator.page(paginator.num_pages)
-    return {'paginator_words': words}
+    return {'paginator_words': words, 'lesson':lesson}

@@ -10,6 +10,13 @@
 <h3>было выученно: {{ count_words }} слов </h3>
 
 
-<h5>Сделай кнопку, начать заново</h5>
+
+<form method="post" action="{% url 'lesson:study' lesson.pk %}">
+    {% csrf_token %}
+    <input type="hidden" name="lesson_del" value="{{ lesson.pk }}">
+    <input type="submit" value="Удалить прогресс">
+</form>
+
+
 </body>
 </html>
