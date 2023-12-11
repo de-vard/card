@@ -59,7 +59,7 @@ class StudyView(DetailView):
         session = LessonSession(self.request)
         if knowledge == "known":
             session.add(word_id)
-        elif knowledge in session.lesson and knowledge == "unknown":
+        elif knowledge == "unknown" and word_id in session.lesson:
             session.remove(word_id)
 
         last_or_not_last = self.request.POST.get('last', None)

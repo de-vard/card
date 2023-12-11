@@ -9,9 +9,8 @@ class LessonSession:
             self.session['lesson'] = []  # добавляем словарь
         self.lesson = self.session['lesson']
 
-    def add(self, word):
+    def add(self, word_id):
         """Добавить слово в сохраненные."""
-        word_id = str(word)
         if word_id not in self.session['lesson']:  # проверяем на вхождение слова в сессию, если слово не входит
             self.session['lesson'].append(word_id)
             self.save()
@@ -20,9 +19,8 @@ class LessonSession:
         # пометить сеанс как "измененный", чтобы обеспечить его сохранение
         self.session.modified = True
 
-    def remove(self, word):
+    def remove(self, word_id):
         """Удалить слово из урока."""
-        word_id = str(word.id)
         if word_id in self.session['lesson']:
             self.session['lesson'].remove(word_id)
             self.save()
