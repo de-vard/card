@@ -8,15 +8,15 @@ class Course(models.Model):
     slug = models.SlugField(max_length=250, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    registrations = models.ManyToManyField(
+    registered_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='CourseRegistration',
         verbose_name='Записи на курс',
         related_name='registered_courses'
     )
-    users_like = models.ManyToManyField(
+    users_liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        related_name='images_liked',
+        related_name='courses_liked',
         blank=True,
         verbose_name="лайки пользователей"
     )
@@ -26,7 +26,7 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         if self._state.adding:  # Проверяем, новый ли это объект
-            self.slug = f"{self.title}-{self.created}"
+            self.slug = f"{self.title}-{self.created}".replace(' ', '')
         return super().save(*args, **kwargs)
 
     def __str__(self):
