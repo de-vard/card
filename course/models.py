@@ -1,5 +1,8 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
+
+User = get_user_model()
 
 
 class Course(models.Model):
@@ -8,12 +11,7 @@ class Course(models.Model):
     slug = models.SlugField(max_length=250, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    registered_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through='CourseRegistration',
-        verbose_name='Записи на курс',
-        related_name='registered_courses'
-    )
+    students = models.ManyToManyField(User, related_name='courses_joined', blank=True)
     users_liked = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='courses_liked',
@@ -35,15 +33,3 @@ class Course(models.Model):
         return self.title
 
 
-class CourseRegistration(models.Model):
-    """ Промежуточная модель для записи пользователей на курс"""
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-    date = models.DateTimeField('Дата записи', auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Запись на курс"
-        verbose_name_plural = "Записи на курсы"
-
-    def __str__(self):
-        return f'{self.user} записался на курс: {self.course}'

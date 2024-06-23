@@ -8,8 +8,8 @@ from flashcard.models import FlashCard
 class Lesson(models.Model):
     """Модель урока"""
     title = models.CharField(max_length=75, verbose_name='Название')
-    words = models.ManyToManyField(FlashCard, verbose_name='Слова')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курсы')
+    words = models.ManyToManyField(FlashCard, verbose_name='Слова', blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons', verbose_name='Курсы')
     created = models.DateTimeField('Дата создания', auto_now_add=True)
     updated = models.DateTimeField('Дата последнего редактирования', auto_now=True)
 
