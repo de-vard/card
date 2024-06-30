@@ -1,40 +1,76 @@
 from rest_framework import viewsets
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from api.permissions import IsEnrolled
-from api.serializers import CourseSerializer
+from api.permissions import IsAuthenticatedAndEnrolled, IsAuthorOrReadOnly
+from api.serializers import CourseSerializer, LessonSerializer, FlashCardSerializer
 from course.models import Course
+from flashcard.models import FlashCard
+from lesson.models import Lesson
 
 
-class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+class CourseViewSet(viewsets.ModelViewSet):
+    """Управление курсами: создание, обновление, удаления и получение списка и деталей"""
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['post'], authentication_classes=[BasicAuthentication],
-            permission_classes=[IsAuthenticated])
-    def enroll(self, request, *args, **kwargs):
-        """Подписаться на курс"""
-        course = self.get_object()
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [IsAuthenticatedAndEnrolled]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+        return super().get_permissions()
+
+
+class EnrollCourseView(APIView):
+    """Подписка на курс"""
+    authentication_classes = [BasicAuthentication]
+
+    def post(self, request, pk, *args, **kwargs):
+        course = Course.objects.get(pk=pk)
         course.students.add(request.user)
         return Response({'enrolled': True})
 
-    @action(detail=True, methods=['post'], authentication_classes=[BasicAuthentication],
-            permission_classes=[IsAuthenticated])
-    def unenroll(self, request, *args, **kwargs):
-        """Отписаться с курса"""
-        course = self.get_object()
+
+class UnenrollCourseView(APIView):
+    """Отписка с курса"""
+    authentication_classes = [BasicAuthentication]
+
+    def post(self, request, pk, *args, **kwargs):
+        course = Course.objects.get(pk=pk)
         course.students.remove(request.user)
         return Response({'unenrolled': True})
 
-    @action(
-        detail=True, methods=['get'], serializer_class=CourseSerializer,
-        authentication_classes=[BasicAuthentication], permission_classes=[IsAuthenticated, IsEnrolled]
-    )
-    def contents(self, request, *args, **kwargs):
-        """Просмотр содержимого курса"""
-        course = self.get_object()
-        serializer = CourseSerializer(course, context={'request': request})
-        return Response(serializer.data)
+
+class LessonViewSet(viewsets.ModelViewSet):
+    """Управление уроками: создание, обновление, удаления и получение списка и деталей"""
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [IsAuthenticatedAndEnrolled]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+        return super().get_permissions()
+
+
+class FlashCardViewSet(viewsets.ModelViewSet):
+    """Управление карточками: создание, обновление, удаления и получение списка и деталей"""
+    queryset = FlashCard.objects.all()
+    serializer_class = FlashCardSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [IsAuthenticatedAndEnrolled]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+        return super().get_permissions()

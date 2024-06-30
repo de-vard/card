@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from core.mixins import SlugMixin, TimestampMixin
+
 
 class CustomUser(AbstractUser):
     """Расширяем пользовательскую модель"""
@@ -22,15 +24,14 @@ class CustomUser(AbstractUser):
 
     def save(self, *args, **kwargs):
         if self._state.adding:  # Проверяем, новый ли это объект
-            self.slug = f"{self.first_name}-{self.date_joined}"
+            self.slug = f"{self.first_name}-{self.date_joined}".replace(' ', '')
         return super().save(*args, **kwargs)
 
 
-class Follow(models.Model):
+class Follow(TimestampMixin, models.Model):
     """Промежуточная модель подписки на пользователя"""
     user_from = models.ForeignKey('user.CustomUser', related_name='rel_from_set', on_delete=models.CASCADE)
     user_to = models.ForeignKey('user.CustomUser', related_name='rel_to_set', on_delete=models.CASCADE)
-    created = models.DateTimeField('хранение времени взаимосвязи', auto_now_add=True)
 
     class Meta:
         indexes = [models.Index(fields=['-created']), ]

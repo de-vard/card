@@ -6,4 +6,4 @@ from lesson import models
 class LessonAdmin(admin.ModelAdmin):
     """Уроки"""
     list_display = ('id', 'title', 'course')
-    filter_horizontal = ['words']  # меняем виджет при выборе слов
+

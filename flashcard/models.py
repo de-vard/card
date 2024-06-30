@@ -1,5 +1,11 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 from django.db import models
+
+from core.mixins import TimestampMixin
+from lesson.models import Lesson
+
+User = get_user_model()
 
 
 class Image(models.Model):
@@ -11,12 +17,23 @@ class Image(models.Model):
         return self.title
 
 
-class FlashCard(models.Model):
+class FlashCard(TimestampMixin, models.Model):
     english_word = models.CharField(max_length=100, verbose_name='Английское слово')
     russian_word = models.CharField(max_length=100, verbose_name='Русское слово')
     transcription = models.CharField(max_length=100, verbose_name='Транскрипция')
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name='flashcards',
+        verbose_name='Урок'
+    )
+    learner = models.ManyToManyField(
+        User,
+        through='LearnerFlashCard',
+        verbose_name='Пользователи изучающие карточки',
+        related_name='learner_flashcard',
+
+    )
     image = models.ForeignKey(
         Image,
         on_delete=models.SET_NULL,
@@ -36,3 +53,18 @@ class FlashCard(models.Model):
 
     def __str__(self):
         return self.russian_word
+
+
+class LearnerFlashCard(models.Model):
+    """Промежуточная модель для проверки пользователя изучил ли он карточку"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    flashcard = models.ForeignKey(FlashCard, on_delete=models.CASCADE, verbose_name='Карточка')
+    learned_word = models.BooleanField(default=False, verbose_name='Изучено ли слово')
+
+    class Meta:
+        unique_together = ('user', 'flashcard')
+        verbose_name = 'Статус изучения карточки'
+        verbose_name_plural = 'Статусы изучения карточек'
+
+    def __str__(self):
+        return f"{self.user} - {self.flashcard} - {'Изучено' if self.learned_word else 'Не изучено'}"

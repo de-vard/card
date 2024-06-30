@@ -39,7 +39,7 @@ class FlashCardAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('english_word', 'russian_word', 'transcription')
+            'fields': ('english_word', 'russian_word', 'transcription', 'lesson')
         }),
         ('Media', {
             'fields': ('image', 'sound', 'get_image')

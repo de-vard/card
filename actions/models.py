@@ -3,12 +3,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.conf import settings
 
+from core.mixins import TimestampMixin
 
-class Action(models.Model):
+
+class Action(TimestampMixin,models.Model):
     """Модель для отслеживания действий пользователя"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='actions', on_delete=models.CASCADE)
     verb = models.CharField('действие которое выполнил пользователь', max_length=255)
-    created = models.DateTimeField(auto_now_add=True)
     target_ct = models.ForeignKey(  # сообщает о модели, используемой для взаимосвязи
         ContentType,
         blank=True,
