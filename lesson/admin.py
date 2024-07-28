@@ -6,4 +6,4 @@ from lesson import models
 class LessonAdmin(admin.ModelAdmin):
     """Уроки"""
     list_display = ('id', 'title', 'course')
-
+    exclude = ('slug',)  # Исключаем поле slug из формы админки

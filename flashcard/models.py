@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
-from core.mixins import TimestampMixin
+
 from lesson.models import Lesson
+from mixins.models import TimestampSlugMixin
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ class Image(models.Model):
         return self.title
 
 
-class FlashCard(TimestampMixin, models.Model):
+class FlashCard(TimestampSlugMixin, models.Model):
     english_word = models.CharField(max_length=100, verbose_name='Английское слово')
     russian_word = models.CharField(max_length=100, verbose_name='Русское слово')
     transcription = models.CharField(max_length=100, verbose_name='Транскрипция')

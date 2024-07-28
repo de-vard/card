@@ -10,7 +10,7 @@ class LessonInline(admin.StackedInline):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created', 'updated')  # Поля для отображения в списке
+    list_display = ('id', 'title', 'author', 'created', 'updated')  # Поля для отображения в списке
     search_fields = ('title', 'author__username')  # Поля для поиска
     list_filter = ('created', 'updated')  # Поля для фильтрации
     exclude = ('slug',)  # Исключаем поле slug из формы админки
