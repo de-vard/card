@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt',
 
     # local
     'course.apps.CourseConfig',
@@ -44,7 +45,16 @@ INSTALLED_APPS = [
     'lesson.apps.LessonConfig',
     'user.apps.UserConfig',
     'actions.apps.ActionsConfig',
+    'authentication.apps.AuthenticationConfig',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (  # задаёт механизм аутентификации с использованием JWT
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS':  # настраивает фильтрацию данных с помощью django-filters
+        ['django_filters.rest_framework.DjangoFilterBackend'],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -144,7 +154,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # продолжительность жизни токена ACCESS

@@ -11,7 +11,7 @@ from course.serializers import CourseSerializerDetails, CourseSerializerList
 from course.models import Course, RegisteredUsers
 
 
-# Todo: проверь код на разрешения, создай тысты для тестирования кода
+# Todo: проверь код на разрешения, создай тесты для тестирования кода
 class CourseListAPIView(generics.ListAPIView):
     """Список курсов"""
     queryset = Course.objects.all()
