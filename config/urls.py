@@ -24,15 +24,16 @@ from config import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # djangorestframework-simplejwt
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    # # djangorestframework-simplejwt
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     # local
     path('api/v1/courses/', include('course.urls')),
     path('api/v1/lessons/', include('lesson.urls')),
     path('api/v1/flashcards/', include('flashcard.urls')),
+    path('api/v1/authentication/', include('authentication.urls')),
 ]
 
 if settings.DEBUG:
