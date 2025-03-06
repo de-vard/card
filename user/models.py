@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import Http404
 
-from mixins.models import SlugMixin
+from mixins.models import SlugMixin, TimestampSlugMixin
 
 
 class UserManager(BaseUserManager):

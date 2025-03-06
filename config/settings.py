@@ -48,12 +48,23 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
 ]
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (  # задаёт механизм аутентификации с использованием JWT
+    # Аутентификация через JWT-токены
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS':  # настраивает фильтрацию данных с помощью django-filters
-        ['django_filters.rest_framework.DjangoFilterBackend'],
+
+    # Фильтрация, поиск и сортировка
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',  # Фильтрация по полям
+        'rest_framework.filters.SearchFilter',  # Поиск (используется ?search=)
+        'rest_framework.filters.OrderingFilter',  # Сортировка (используется ?ordering=)
+    ],
+
+    # Пагинация (LimitOffset или PageNumber)
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 15,
 }
 
 MIDDLEWARE = [
