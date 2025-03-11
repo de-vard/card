@@ -18,10 +18,10 @@ urlpatterns = [
     # Удаление курса
     path('<int:id>/delete/', views.LessonDestroyAPIView.as_view(), name='lesson-delete'),
 
-    # Подписка на курс
+    # Список флеш карточек
     path('<int:pk>/learn/', views.LearnFlashcards.as_view(), name='lesson-learn'),
 
-    # Отписка от курса
+    # Сброс результата урока, обнуления выученных слов в уроке
     path('<int:pk>/reset/result/', views.ResetResultLesson.as_view(), name='lesson-reset-result'),
 
 

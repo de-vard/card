@@ -22,3 +22,6 @@ class IsAuthenticatedAndEnrolled(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Проверяем, что  пользователь подписан на курс
         return obj.students.filter(id=request.user.id).exists()
+
+
+

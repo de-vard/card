@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
-from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -15,21 +14,24 @@ from course.models import Course, RegisteredUsers
 class CourseListAPIView(generics.ListAPIView):
     """Список курсов"""
     queryset = Course.objects.all()
+    http_method_names = ["get"]
     permission_classes = [IsAuthenticated]
     serializer_class = CourseSerializerList
 
 
 class CourseRetrieveAPIView(generics.RetrieveAPIView):
-    """Детальный просмотер курсов без редактирования"""
+    """Детальный просмотер курса без редактирования"""
     lookup_field = "id"
+    http_method_names = ["get"]
     queryset = Course.objects.all()
-    permission_classes = [IsAuthenticatedAndEnrolled]
+    permission_classes = [IsAuthenticated]
     serializer_class = CourseSerializerDetails
 
 
 class CourseRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     """Редактирование курса"""
     lookup_field = 'id'
+    http_method_names = ["put"]
     queryset = Course.objects.all()
     permission_classes = [IsAuthor]
     serializer_class = CourseSerializerDetails
@@ -37,6 +39,7 @@ class CourseRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
 
 class CourseCreateAPIView(generics.CreateAPIView):
     """Создание курса"""
+    http_method_names = ["post"]
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = CourseSerializerDetails
@@ -51,6 +54,7 @@ class CourseDestroyAPIView(generics.DestroyAPIView):
 
 class EnrollCourse(APIView):
     """Подписка на курс"""
+    http_method_names = ["post"]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk, *args, **kwargs):
@@ -63,6 +67,7 @@ class EnrollCourse(APIView):
 
 class UnenrollCourse(APIView):
     """Отписка от курса"""
+    http_method_names = ["post"]
     permission_classes = [IsAuthenticatedAndEnrolled]
 
     def post(self, request, pk, *args, **kwargs):
@@ -75,6 +80,7 @@ class UnenrollCourse(APIView):
 
 class LikeCourse(APIView):
     """Лайк курса"""
+    http_method_names = ["post"]
     permission_classes = [IsAuthenticatedAndEnrolled]
 
     def post(self, request, pk, *args, **kwargs):
@@ -88,6 +94,7 @@ class LikeCourse(APIView):
 
 class DislikeCourse(APIView):
     """Дизлайк курса"""
+    http_method_names = ["post"]
     permission_classes = [IsAuthenticatedAndEnrolled]
 
     def post(self, request, pk, *args, **kwargs):

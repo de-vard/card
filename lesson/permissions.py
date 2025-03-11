@@ -2,7 +2,7 @@ from rest_framework import permissions
 
 
 class IsAuthenticatedAndEnrolled(permissions.BasePermission):
-    """Проверка что пользоватеь подписан на курс"""
+    """Проверка, что пользователь подписан на курс"""
 
     def has_permission(self, request, view):
         # Проверяем, что пользователь аутентифицирован

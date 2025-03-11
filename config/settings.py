@@ -48,13 +48,14 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
 ]
 
-
 REST_FRAMEWORK = {
     # Аутентификация через JWT-токены
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
     # Фильтрация, поиск и сортировка
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',  # Фильтрация по полям
@@ -64,7 +65,7 @@ REST_FRAMEWORK = {
 
     # Пагинация (LimitOffset или PageNumber)
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 15,
+    'PAGE_SIZE': 10
 }
 
 MIDDLEWARE = [
@@ -154,17 +155,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройка модели пользователя
 AUTH_USER_MODEL = 'user.CustomUser'
-
-# Настройка DRF
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ],
-
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # продолжительность жизни токена ACCESS

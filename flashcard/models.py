@@ -37,7 +37,10 @@ class FlashCard(TimestampSlugMixin, models.Model):
     )
     image = models.ForeignKey(
         Image,
+
+        # TODO: При удалении изображения в карточках пропадет оно тоже, как насчет запрета на удаление ?
         on_delete=models.SET_NULL,
+
         null=True,
         blank=True,
         verbose_name='Фото'

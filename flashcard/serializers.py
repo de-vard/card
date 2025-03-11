@@ -18,4 +18,4 @@ class FlashCardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FlashCard
-        fields = ('english_word', 'russian_word', 'transcription', 'set_image', 'image', 'sound', 'lesson')
+        fields = ('id', 'english_word', 'russian_word', 'transcription', 'set_image', 'image', 'sound', 'lesson')
