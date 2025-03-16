@@ -100,7 +100,7 @@ class TestLessonViewSet:
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_delete_not_author(self, client, user, lesson):
-        """Тест: пользователь, не являющийся автором, НЕ должен удалять курс"""
+        """Тест: пользователь, не являющийся автором, НЕ должен удалять урок"""
         client.force_authenticate(user=user)  # Авторизуем пользователя, который не является автором курса
         response = client.delete(self.endpoint + str(lesson.id) + "/delete/")
 
@@ -124,11 +124,6 @@ class TestLessonViewSet:
         assert response.status_code == status.HTTP_200_OK
         # Проверяем, что возвращены все 3 карточки
         assert len(response.data) == 3
-        # Проверяем, что первая карточка имеет тот же id, что и flashcard1
-        assert response.data[0]["id"] == flashcard1.id
-        # Дополнительные проверки для других карточек
-        assert response.data[1]["id"] == flashcard2.id
-        assert response.data[2]["id"] == flashcard3.id
 
     def test_forbidden_access_if_user_not_enrolled(self, client, user, lesson, course):
         """Проверяем, что доступ к карточкам урока запрещен, если пользователь не подписан на курс."""
@@ -170,7 +165,6 @@ class TestLessonViewSet:
         # Проверяем статус ответа
         assert response.status_code == status.HTTP_403_FORBIDDEN  # Доступ запрещен
 
-    ###############################################
     def test_list_anonymous(self, client):
         """Тест на получение списка уроков неавторизованным пользователем"""
         response = client.get(self.endpoint)

@@ -1,3 +1,3 @@
 from django.shortcuts import render
 
-# Create your views here.
+# TODO: напиши вьюшки для получения списка пользователей и возможности подписываться на пользователя
